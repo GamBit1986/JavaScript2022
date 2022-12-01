@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+Необязательное задание, но желательно сделать.
+
+Необходимо данное задание выполнить в es5 стиле и в es6 стиле.
+Необходимо создать функцию-конструктор/класс для поста в социальной сети.
+Названия: `PostES5` для es5 стиля и `PostES6` для es6 стиля.
+Пост должен хранить:
+1. Автора поста (имени достаточно).
+2. Текст поста.
+3. Дату и время последнего изменения поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Каждому экземпляру объекта должен быть доступен метод `edit`, который будет
+менять текст поста.
+
+---
+
+Необходимо создать функцию-конструктор/класс для закрепленного поста в
+социальной сети.
+Названия: `AttachedPostES5` для es5 стиля и `AttachedPostES6` для es6 стиля.
+Закрепленный пост должен наследоваться от обычного поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Закрепленный пост должен иметь свойство `highlighted`, в котором по умолчанию
+будет лежать значение false (это свойство будет обозначать, будет ли наш
+закрепленный пост подсвечен).
+У экземпляров объекта закрепленного поста должен быть метод с названием
+`makeTextHighlighted`, который сделает так, чтобы наш пост стал подсвеченным
+(будет менять свойство `highlighted`).
+
+---
+
+Подсказки:
+1. Задание сложное, советую делать по аналогии с примером на онлайн-занятии.
+2. Обратите внимание что пост хранит "дату и время последнего изменения
+поста", это значит что если пост кто-то изменит (например вызовет какой-то
+метод, который изменит что-то в посте), дата и время последнего изменения
+поста также должна измениться.
+3. Выполняйте все по порядку, не стоит пытаться сделать все сразу, иначе можно
+что-нибудь пропустить.
+4. Если непонятно условие - задайте вопрос.
+-->
+  <script>
+    "use strict";
+
+    //-------------------ES6-----------------------------------------------------
+
+    class PostES6 {
+      constructor(author, text, changeDate) {
+        this.author = author;
+        this.text = text;
+        this.changeDate = new Date();
+      }
+
+      edit(text) {
+        this.text = text;
+        this.changeDate = new Date();
+      }
+    }
+
+    // Написал функцию задержки, чтобы убедиться, что время тоже изменяется
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    let post1 = new PostES6("Яша", "Lorem ipsum dolor sit, amet consectetur adipisicing elit. \
+     Enim iure illo in explicabo atque.\
+     Voluptatum id labore, qui facere autem, \
+     provident minus rem perferendis doloremque aperiam cum. Earum, fugiat placeat!");
+    console.log(post1);
+
+    // эта часть в консоли появится последней
+    sleep(2000).then(() => {
+      post1.edit("Lorem ipsum dolor sit amet.");
+      console.log(post1);
+    });
+
+    class AttachedPostES6 extends PostES6 {
+      constructor(author, text, changeDate, highlighted) {
+        super(author, text, changeDate);
+        this.highlighted = false;
+        this.changeDate = new Date();
+      }
+
+      makeTextHighlighted() {
+        this.highlighted = true;
+        this.changeDate = new Date();
+      }
+    }
+    /* Эта часть будет выполняться быстрее,
+     чем первая часть задания из-за внесенной задержки, но если закинуть ее в задержку,
+     проверять менее удобно будет, а так все по порядку, как в задание.
+     */
+    let attachedPost1 = new AttachedPostES6("Антон", "Lorem ipsum dolor sit amet.");
+    console.log(attachedPost1);
+
+    attachedPost1.makeTextHighlighted();
+    console.log(attachedPost1);
+
+    //-------------------ES5-----------------------------------------------------
+
+    function PostES5(author, text, changeDate) {
+      this.author = author;
+      this.text = text;
+      this.changeDate = new Date();
+    }
+
+    PostES5.prototype.edit = function (text) {
+      this.text = text;
+      this.changeDate = new Date();
+    };
+
+    let post2 = new PostES5("Армен", "Lorem ipsum dolor sit, amet consectetur adipisicing elit. \
+     Enim iure illo in explicabo atque.\
+     Voluptatum id labore, qui facere autem, \
+     provident minus rem perferendis doloremque aperiam cum. Earum, fugiat placeat!");
+    console.log(post2);
+
+    /*В этой части я не стал делать задержку выполнения кода,
+     т.к. в первой части доказал, что время будет перезаписано
+     */
+
+    post2.edit("Заменили второй текст.");
+    console.log(post2);
+
+    function AttachedPostES5(author, text, highlighted, changeDate) {
+      PostES5.call(this, author, text, changeDate);
+      this.highlighted = false;
+    }
+
+    AttachedPostES5.prototype = Object.create(PostES5.prototype);
+    AttachedPostES5.prototype.constructor = AttachedPostES5;
+
+    AttachedPostES5.prototype.makeTextHighlighted = function () {
+      this.highlighted = true;
+      this.changeDate = new Date();
+    }
+
+    let attachedPost2 = new AttachedPostES5("Лев", "Lorem ipsum dolor sit, \
+    amet consectetur");
+    console.log(attachedPost2)
+
+    attachedPost2.makeTextHighlighted();
+    console.log(attachedPost2)
+
+
+
+  </script>
+</body>
+
+</html>
